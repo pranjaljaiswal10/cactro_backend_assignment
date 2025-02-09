@@ -9,13 +9,11 @@ const cacheSchema = new mongoose.Schema(
     value: {
       type: mongoose.Schema.Types.Mixed,
       required: true,
-      unique:true,
+      unique: true,
     },
   },
   { timestamps: true }
 );
-
-
 
 cacheSchema.pre("save", async function (next) {
   const cache = this.constructor;
