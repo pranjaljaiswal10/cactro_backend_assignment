@@ -1,15 +1,33 @@
-import express from "express"
-import dotenv from "dotenv"
+import express from "express";
+import dotenv from "dotenv";
+import cacheRouter from "./routes/cache.router.js";
+import connectDB from "./db/index.js";
 
 dotenv.config({
-    path:"./.env"
+  path: "./.env",
+});
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/cache", cacheRouter);
+
+
+app.use("*",(err,req,res,next)=>{
+    console.log(err.stack)
+    res.status(500).json({message:"Something went wrongg"})
 })
 
-const app=express()
-app.use(express.json())
-app.use(express.urlencoded({extended:true}))
 
-const port=process.env.PORT || 4000
-app.listen(port,()=>{
-    console.log(`server running on port:${port}`)
-})
+const port = process.env.PORT || 4000;
+
+connectDB()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`server running on port:${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log("MONGODB conection FAILED!!", err);
+  });
